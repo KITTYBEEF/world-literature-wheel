@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>世界文学大转盘 · World Literature Wheel — 让随机性带你遇见陌生的文学世界</title>
+<meta name="description" content="世界文学大转盘——从时代、大洲、国家、作家性别到文学文体，五重随机抽一签，看看概率会给你推荐哪本书。让随机性带你遇见陌生的文学世界。">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="世界文学大转盘 · World Literature Wheel">
+<meta property="og:description" content="世界文学大转盘——从时代、大洲、国家、作家性别到文学文体，五重随机抽一签，看看概率会给你推荐哪本书。让随机性带你遇见陌生的文学世界。">
+<meta property="og:image" content="https://literaturewheel.com/share-preview.png">
+<meta property="og:url" content="https://literaturewheel.com/">
+<meta property="og:site_name" content="World Literature Wheel">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="世界文学大转盘 · World Literature Wheel">
+<meta name="twitter:description" content="世界文学大转盘——从时代、大洲、国家、作家性别到文学文体，五重随机抽一签，看看概率会给你推荐哪本书。">
+<meta name="twitter:image" content="https://literaturewheel.com/share-preview.png">
+<meta name="theme-color" content="#fefcf7">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600&display=swap');
+
+
+/* =========== 找书结果卡片 =========== */
+/* =========== 主界面立绘 =========== */
+</style>
+<link rel="stylesheet" href="css/01-base.css">
+<link rel="stylesheet" href="css/02-buttons.css">
+<link rel="stylesheet" href="css/03-globe.css">
+<link rel="stylesheet" href="css/04-sea.css">
+<link rel="stylesheet" href="css/05-wheel.css">
+<link rel="stylesheet" href="css/06-book.css">
+<link rel="stylesheet" href="css/07-continent.css">
+<link rel="stylesheet" href="css/08-history.css">
+<link rel="stylesheet" href="css/09-books.css">
+<link rel="stylesheet" href="css/10-characters.css">
+<link rel="stylesheet" href="css/11-share.css">
+</head>
+<body>
+
+<!-- 语言切换按钮 -->
+<button class="lang-switch" id="langSwitch" onclick="toggleLanguage()" title="Switch Language">EN</button>
+
+<section id="homeScreen" class="screen">
+    <h1 data-i18n="homeTitle">世界文学大转盘</h1>
+    <p class="subtitle" data-i18n="homeSubtitle">让随机性带你遇见陌生的文学世界</p>
+    <button onclick="startJourney()" data-i18n="btnStart">开始</button>
+    <button class="home-history-btn" onclick="openHistory()" data-i18n="btnHistory">查看历史记录</button>
+</section>
+
+<section id="eraScreen" class="screen hidden">
+    <h2 data-i18n="eraTitle">请抽取你即将到达的文学时间段</h2>
+    <div class="wheel-stage">
+        <div class="wheel-pointer"></div>
+        <div class="wheel-wrapper" id="eraWheelWrapper">
+            <svg id="eraWheel" viewBox="0 0 400 400"></svg>
+        </div>
+        <div class="wheel-shine"></div>
+        <div class="wheel-hub"></div>
+    </div>
+        <button id="eraStartButton" onclick="startEraDraw()" data-i18n="btnOk">好</button>
+    <div style="margin:6px 0 14px;">
+        <select id="eraManualSelect" onchange="manualSelectEra(this.value)" style="font-family:inherit;font-size:12px;letter-spacing:.2em;padding:6px 14px;color:#8b6a4e;background:transparent;border:1px solid rgba(184,147,90,.25);border-radius:3px;cursor:pointer;outline:none;">
+<option value="" data-i18n="optOrCustom">— 或者自选 —</option>
+            <option value="史前">史前</option>
+            <option value="早期文明">早期文明</option>
+            <option value="古典时代">古典时代</option>
+            <option value="后古典时代">后古典时代</option>
+            <option value="近代早期">近代早期</option>
+            <option value="工业与帝国">工业与帝国</option>
+            <option value="全球冲突">全球冲突</option>
+            <option value="当代">当代</option>
+        </select>
+    </div>
+    <div id="eraResult" class="result" data-i18n="notDrawn">尚未抽取</div>
+    <div id="eraActions" class="hidden">
+        <button onclick="startEraDraw()" data-i18n="btnDrawAgain">重新抽取</button>
+        <button onclick="goToContinent()" data-i18n="btnNext">下一步</button>
+    </div>
+    <button class="back-step-btn" onclick="goBack('home')" data-i18n="btnBackHome">返回主界面</button>
+</section>
+
+<section id="continentScreen" class="screen hidden">
+    <h2 data-i18n="continentTitle">请选择你即将拜访的范围</h2>
+    <div class="era-card" id="eraCard">
+        <div class="era-card-years" id="eraCardYears"></div>
+        <div class="era-card-desc" id="eraCardDesc"></div>
+    </div>
+    <p id="continentHint" class="era-hint"></p>
+
+    <div class="continent-grid">
+        <button class="continent-btn span-2" data-continent="不限" onclick="chooseContinent('不限')">
+            <span class="cont-name" data-i18n="contAll">不 限</span><span class="cont-sub">ALL</span>
+        </button>
+        <button class="continent-btn span-2" data-continent="随机" onclick="chooseContinent('随机')">
+            <span class="cont-name" data-i18n="contRandom">随 机 大 洲</span><span class="cont-sub">FORTUNE</span>
+        </button>
+        <button class="continent-btn" data-continent="亚洲" onclick="chooseContinent('亚洲')">
+            <span class="cont-name" data-i18n="contAsia">亚 洲</span><span class="cont-sub">ASIA</span>
+        </button>
+        <button class="continent-btn" data-continent="欧洲" onclick="chooseContinent('欧洲')">
+            <span class="cont-name" data-i18n="contEurope">欧 洲</span><span class="cont-sub">EUROPE</span>
+        </button>
+        <button class="continent-btn" data-continent="非洲" onclick="chooseContinent('非洲')">
+            <span class="cont-name" data-i18n="contAfrica">非 洲</span><span class="cont-sub">AFRICA</span>
+        </button>
+        <button class="continent-btn" data-continent="美洲" onclick="chooseContinent('美洲')">
+            <span class="cont-name" data-i18n="contAmericas">美 洲</span><span class="cont-sub">AMERICAS</span>
+        </button>
+        <button class="continent-btn span-2" data-continent="大洋洲" onclick="chooseContinent('大洋洲')">
+            <span class="cont-name" data-i18n="contOceania">大 洋 洲</span><span class="cont-sub">OCEANIA</span>
+        </button>
+    </div>
+
+    <button class="back-step-btn" onclick="goBack('era')" data-i18n="btnBack">返回上一步</button>
+</section>
+
+<section id="countryScreen" class="screen hidden">
+    <h2 data-i18n="countryTitle">请抽取你即将要拜访的国家</h2>
+    <p id="countryEra" class="country-title"></p>
+    <p id="countryRange" class="country-title"></p>
+
+    <div class="globe" id="globe">
+        <svg viewBox="20 20 260 260" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <radialGradient id="seaGrad" cx="35%" cy="28%" r="85%">
+                    <stop offset="0%"  stop-color="#6bc3ff"/>
+                    <stop offset="60%" stop-color="#3b9eff"/>
+                    <stop offset="100%" stop-color="#1a73d6"/>
+                </radialGradient>
+                <radialGradient id="globeShade" cx="30%" cy="25%" r="90%">
+                    <stop offset="0%"  stop-color="rgba(255,255,255,0.35)"/>
+                    <stop offset="45%" stop-color="rgba(255,255,255,0)"/>
+                    <stop offset="100%" stop-color="rgba(10,40,80,0.25)"/>
+                </radialGradient>
+                <radialGradient id="atmoGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="80%" stop-color="rgba(150,200,255,0)"/>
+                    <stop offset="94%" stop-color="rgba(150,200,255,0.18)"/>
+                    <stop offset="100%" stop-color="rgba(150,200,255,0)"/>
+                </radialGradient>
+                <radialGradient id="markerGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%"   stop-color="rgba(255,248,222,0.95)"/>
+                    <stop offset="18%"  stop-color="rgba(255,240,196,0.62)"/>
+                    <stop offset="48%"  stop-color="rgba(255,230,168,0.18)"/>
+                    <stop offset="78%"  stop-color="rgba(255,226,158,0.04)"/>
+                    <stop offset="100%" stop-color="rgba(255,226,158,0)"/>
+                </radialGradient>
+                <clipPath id="globeClip">
+                    <circle cx="150" cy="150" r="130"/>
+                </clipPath>
+            </defs>
+
+            <circle cx="150" cy="150" r="130" fill="url(#seaGrad)"/>
+
+            <g clip-path="url(#globeClip)">
+                <path id="landPath" fill="#9ed53d" stroke="#4a7a1a" stroke-width="0.8" stroke-linejoin="round"/>
+                <g id="countryMarker">
+                    <circle class="marker-glow" r="24" fill="url(#markerGlow)"/>
+                </g>
+            </g>
+
+            <circle cx="150" cy="150" r="130" fill="url(#globeShade)" pointer-events="none"/>
+            <circle cx="150" cy="150" r="130" fill="url(#atmoGlow)" pointer-events="none"/>
+            <circle cx="150" cy="150" r="130" fill="none" stroke="#2c4a6e" stroke-width="2" opacity="0.9"/>
+        </svg>
+    </div>
+
+    <p class="globe-caption"><span data-i18n="captionEarth">此刻地球</span></p>
+
+        <button id="countryStartButton" onclick="startCountryDraw()" data-i18n="btnOk">好</button>
+    <div style="margin:6px 0 14px;">
+        <select id="countryManualSelect" onchange="manualSelectCountry(this.value)" style="font-family:inherit;font-size:12px;letter-spacing:.2em;padding:6px 14px;color:#8b6a4e;background:transparent;border:1px solid rgba(184,147,90,.25);border-radius:3px;cursor:pointer;outline:none;max-width:260px;">
+        </select>
+    </div>
+    <div id="countryResult" class="result" data-i18n="notDrawn">尚未抽取</div>
+    <div id="countryActions" class="hidden">
+        <button onclick="startCountryDraw()" data-i18n="btnDrawAgain">重新抽取</button>
+        <button onclick="goToGender()" data-i18n="btnNext">下一步</button>
+    </div>
+    <button class="back-step-btn" onclick="goBack('continent')" data-i18n="btnBack">返回上一步</button>
+</section>
+
+<section id="genderScreen" class="screen hidden">
+    <h2 data-i18n="genderTitle">您将由哪一种性别的作家带入文学世界？</h2>
+    <p id="genderEraText" class="country-title"></p>
+    <p id="genderCountryText" class="country-title"></p>
+    <div class="sea">
+        <div class="gender-side female-side" data-i18n="gFemale">女性作家</div>
+        <div class="gender-side male-side" data-i18n="gMale">男性作家</div>
+        <div id="boat" class="boat">⛵</div>
+    </div>
+    <button id="genderStartButton" onclick="startGenderDraw()" data-i18n="btnDraw">抽取</button>
+    <div style="margin:6px 0 14px;">
+        <select id="genderManualSelect" onchange="manualSelectGender(this.value)" style="font-family:inherit;font-size:12px;letter-spacing:.2em;padding:6px 14px;color:#8b6a4e;background:transparent;border:1px solid rgba(184,147,90,.25);border-radius:3px;cursor:pointer;outline:none;">
+<option value="" data-i18n="optOrCustom">— 或者自选 —</option>
+            <option value="女性作家">女性作家</option>
+            <option value="男性作家">男性作家</option>
+        </select>
+    </div>
+    <div id="genderResult" class="result" data-i18n="notDrawn">尚未抽取</div>
+    <div id="genderActions" class="hidden">
+        <button onclick="startGenderDraw()" data-i18n="btnDrawAgain">重新抽取</button>
+        <button onclick="goToGenre()" data-i18n="btnNext">下一步</button>
+    </div>
+    <button class="back-step-btn" onclick="goBack('country')" data-i18n="btnBack">返回上一步</button>
+</section>
+
+<section id="genreScreen" class="screen hidden">
+    <h2 data-i18n="genreTitle">请抽取你即将阅读的文学文体</h2>
+    <p id="genreEraText" class="country-title"></p>
+    <p id="genreCountryText" class="country-title"></p>
+    <p id="genreGenderText" class="country-title"></p>
+
+    <div class="book-stage">
+        <div class="book">
+            <div class="book-base book-base-left">
+                <span class="book-left-label" data-i18n="bookLabel">文体</span>
+            </div>
+            <div class="book-base book-base-right"></div>
+            <div class="leaves" id="bookLeaves"></div>
+            <div class="book-spine"></div>
+        </div>
+    </div>
+
+                <button id="genreStartButton" onclick="startGenreDraw()" data-i18n="btnOk">好</button>
+    <div style="margin:6px 0 14px;">
+        <select id="genreManualSelect" onchange="manualSelectGenre(this.value)" style="font-family:inherit;font-size:12px;letter-spacing:.2em;padding:6px 14px;color:#8b6a4e;background:transparent;border:1px solid rgba(184,147,90,.25);border-radius:3px;cursor:pointer;outline:none;">
+<option value="" data-i18n="optOrCustom">— 或者自选 —</option>
+            <option value="小说">小说</option>
+            <option value="诗歌">诗歌</option>
+            <option value="戏剧">戏剧</option>
+            <option value="散文">散文</option>
+            <option value="书信">书信</option>
+            <option value="日记">日记</option>
+            <option value="寓言">寓言</option>
+            <option value="史诗">史诗</option>
+            <option value="传记文学">传记文学</option>
+            <option value="旅行文学">旅行文学</option>
+        </select>
+    </div>
+    <div id="genreResult" class="result" data-i18n="notDrawn">尚未抽取</div>
+    <div id="genreActions" class="hidden">
+        <button onclick="startGenreDraw()" data-i18n="btnDrawAgain">重新抽取</button>
+        <button onclick="showFinalResult()" data-i18n="btnFull">查看完整结果</button>
+    </div>
+    <button class="back-step-btn" onclick="goBack('gender')" data-i18n="btnBack">返回上一步</button>
+</section>
+
+<section id="finalScreen" class="screen hidden">
+    <h2 data-i18n="finalTitle">你的文学旅程已经确定</h2>
+    <div class="result" style="flex-direction:column;gap:6px;">
+        <p id="finalEra"></p>
+        <p id="finalCountry"></p>
+        <p id="finalGender"></p>
+        <p id="finalGenre"></p>
+    </div>
+    <p class="subtitle" data-i18n="finalQuote">愿你在陌生的文学世界中，遇见意料之外的思想与灵魂</p>
+    <div class="final-actions">
+        <button class="final-primary" onclick="goToFindBook()" data-i18n="btnFindBook">找书</button>
+        <div class="final-secondary">
+            <button onclick="downloadShareCard()" data-i18n="btnShareCard">保存分享卡</button>
+            <button id="restartJourneyBtn" onclick="restartJourney()" data-i18n="btnRestart">重新开始</button>
+            <button id="exitToHistoryBtn" onclick="exitToHistory()" class="hidden" data-i18n="btnExitHistory">退出</button>
+        </div>
+    </div>
+</section>
+<section id="findBookScreen" class="screen hidden">
+    <h2 data-i18n="findBookTitle">为你找到的书</h2>
+    <div id="findBookList" style="margin:24px 0;color:#8b6a4e;font-size:14px;letter-spacing:.2em;">（待填数据）</div>
+    <div id="seeMoreWrap" style="display:none;">
+        <button class="see-more-btn" id="seeMoreBtn" onclick="showMoreBooks()" data-i18n="btnSeeMore">查看更多</button>
+    </div>
+    <button class="back-step-btn" onclick="goBack('final')" data-i18n="btnBack">返回上一步</button>
+    <button class="back-step-btn" onclick="goBack('home')" data-i18n="btnBackHome">返回主界面</button>
+</section>
+<div id="historyOverlay" class="history-overlay hidden" onclick="overlayClick(event)">
+    <div class="history-panel" onclick="event.stopPropagation()">
+        <div class="history-header">
+            <span class="history-title" data-i18n="historyTitle">抽签历史</span>
+            <button class="history-close" onclick="closeHistory()" title="Close">✕</button>
+        </div>
+        <div class="history-stats hidden" id="historyStats">
+            <div class="stats-title" data-i18n="statsTitle">最常抽到</div>
+            <div class="stats-grid">
+                <div class="stats-row"><span class="stats-label" data-i18n="statsEra">时代</span><span class="stats-value" id="statEraValue">—</span><span class="stats-count" id="statEraCount"></span></div>
+                <div class="stats-row"><span class="stats-label" data-i18n="statsCountry">国家</span><span class="stats-value" id="statCountryValue">—</span><span class="stats-count" id="statCountryCount"></span></div>
+                <div class="stats-row"><span class="stats-label" data-i18n="statsGender">性别</span><span class="stats-value" id="statGenderValue">—</span><span class="stats-count" id="statGenderCount"></span></div>
+                <div class="stats-row"><span class="stats-label" data-i18n="statsGenre">文体</span><span class="stats-value" id="statGenreValue">—</span><span class="stats-count" id="statGenreCount"></span></div>
+            </div>
+        </div>
+        <div class="history-body" id="historyBody">
+            <div class="history-empty" id="historyEmpty">尚无抽签记录<br>去抽一次吧</div>
+            <div id="historyList"></div>
+        </div>
+        <div class="history-footer">
+            <span class="history-count" id="historyCount">共 <strong>0</strong> 条</span>
+            <div style="display:flex;gap:8px;">
+                <button class="history-clear" onclick="exitHistoryToHome()" data-i18n="btnBackHome">返回主页</button>
+                <button class="history-clear" onclick="clearHistory()" data-i18n="btnClear">清空</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 主界面立绘 -->
+<div id="moreBooksOverlay" class="history-overlay hidden" onclick="overlayClickMore(event)">
+    <div class="history-panel" onclick="event.stopPropagation()">
+        <div class="history-header">
+            <span class="history-title" id="moreBooksTitle">全部书籍</span>
+            <button class="history-close" onclick="closeMoreBooks()" title="Close">✕</button>
+        </div>
+        <div class="history-body" id="moreBooksBody" style="padding:8px 20px 20px;"></div>
+        <div class="history-footer">
+            <span class="history-count" id="moreBooksCount"></span>
+            <button class="history-clear" onclick="closeMoreBooks()" data-i18n="btnClose">关闭</button>
+        </div>
+    </div>
+</div>
+<div class="kanban-main" id="kanbanMain">
+  <div class="kanban-inner">
+
+    <!-- 躯干 -->
+    <div class="kanban-breath-torso">
+      <img class="kanban-layer" src="kanban-torso.webp" alt="">
+    </div>
+
+    <!-- 桌子 -->
+    <img class="kanban-layer kanban-table" src="kanban-table.webp" alt="">
+
+    <!-- 胳膊 -->
+    <div class="kanban-breath-arm">
+      <img class="kanban-layer" src="kanban-arm.webp" alt="">
+    </div>
+
+    <!-- 头 + 眼睛 -->
+    <div class="kanban-head-group">
+      <img class="kanban-layer" src="kanban-head.webp" alt="">
+      <div class="kanban-eye-group" id="kanbanEyeGroup">
+        <img class="kanban-layer" id="kanbanEyeBase" src="kanban-eye-base.webp" alt="">
+        <img class="kanban-layer kanban-eye-pupil" id="kanbanEyePupil" src="kanban-eye-pupil.webp" alt="">
+        <img class="kanban-layer" id="kanbanEyeClose" src="kanban-eye-close.webp" alt="" style="opacity:0;">
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- 预加载 pet 图片（浏览器解析到这里就会立刻开始下载） -->
+<div style="position:absolute;width:0;height:0;overflow:hidden;pointer-events:none;" aria-hidden="true">
+  <img src="pet-idle.webp" alt="">
+  <img src="pet-walk.webp" alt="">
+  <img src="pet-excited.webp" alt="">
+  <img src="pet-thinking.webp" alt="">
+  <img src="pet-happy.webp" alt="">
+  <img src="pet-surprised.webp" alt="">
+</div>
+<!-- Q版桌宠 -->
+<div class="pet hidden" id="pet" data-state="idle">
+  <img id="petImg" src="pet-idle.webp" alt="">
+</div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<script src="js/01-data.js"></script>
+<script src="js/02-i18n.js"></script>
+<script src="js/03-state.js"></script>
+<script src="js/04-core.js"></script>
+<script src="js/05-history.js"></script>
+<script src="js/06-wheel-continent.js"></script>
+<script src="js/07-globe.js"></script>
+<script src="js/08-draw.js"></script>
+<script src="js/09-find-book.js"></script>
+<script src="js/10-pet.js"></script>
+<script src="js/11-kanban.js"></script>
+<script src="js/12-main.js"></script>
+<script src="js/13-share.js"></script>
+<script>
+</body>
+</html>

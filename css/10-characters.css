@@ -1,0 +1,274 @@
+.kanban-main{
+  position: fixed;
+  right: 2vw;
+  bottom: 0;
+  z-index: 5;
+  pointer-events: none;
+  user-select: none;
+  height: 55vh;
+  min-height: 380px;
+  max-height: 760px;
+  aspect-ratio: 1500 / 2400;
+}
+.kanban-inner{
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.kanban-layer{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 躯干（最下） */
+.kanban-breath-torso{
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transform-origin: bottom center;
+  animation: kanbanBreath 4.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* 桌子（静止，在躯干上面） */
+.kanban-table{
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+/* 胳膊（在桌子上面） */
+.kanban-breath-arm{
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  transform-origin: bottom center;
+  animation: kanbanBreath 4.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* 头 + 眼睛（最上） */
+.kanban-head-group{
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  transform-origin: bottom center;
+  animation: kanbanBreath 4.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes kanbanBreath{
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+.kanban-eye-group{
+  position: absolute;
+  inset: 0;
+}
+.kanban-eye-pupil{
+  transition: transform 0.35s ease-out;
+  will-change: transform;
+}
+/* =========== Q版桌宠 =========== */
+.pet{
+  position: fixed;
+  bottom: 3vh;
+  left: 0;
+  z-index: 6;
+  height: 21vh;
+  min-height: 170px;
+  max-height: 260px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  will-change: left;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  transition: opacity .4s ease;
+}
+.pet.dragging{
+  cursor: grabbing;
+}
+.pet svg,
+.pet img{
+  height: 100%;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 8px 18px rgba(45,26,16,.22));
+  transition: transform .25s ease;
+  animation: petBreath 3s ease-in-out infinite;
+}
+@keyframes petBreath{
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
+/* 状态特效 */
+.pet[data-state="excited"] svg,
+.pet[data-state="excited"] img{
+  animation: petJump .5s ease-in-out infinite;
+}
+@keyframes petJump{
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-14px) scale(1.05); }
+}
+
+.pet[data-state="thinking"] svg,
+.pet[data-state="thinking"] img{
+  animation: petTilt 2s ease-in-out infinite;
+}
+@keyframes petTilt{
+  0%, 100% { transform: rotate(0deg); }
+  50%      { transform: rotate(8deg); }
+}
+
+.pet[data-state="happy"] svg,
+.pet[data-state="happy"] img{
+  animation: petHappy .6s ease-in-out infinite;
+}
+@keyframes petHappy{
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50%      { transform: translateY(-10px) rotate(4deg); }
+}
+
+.pet[data-state="surprised"] svg,
+.pet[data-state="surprised"] img{
+  animation: petSurprise .35s cubic-bezier(.34,1.56,.64,1) 1;
+}
+@keyframes petSurprise{
+  0%   { transform: scale(1) rotate(0); }
+  40%  { transform: scale(1.15) rotate(-6deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.pet[data-state="walk"] svg,
+.pet[data-state="walk"] img{
+  animation: petWalkBob .35s ease-in-out infinite alternate;
+}
+@keyframes petWalkBob{
+  from{ transform: translateY(0) rotate(-2deg); }
+  to  { transform: translateY(-5px) rotate(2deg); }
+}
+
+@media(max-width:600px){
+  .pet{
+    height: 13vh;
+    min-height: 110px;
+    bottom: 2vh;
+  }
+  .kanban-main{
+    height: 32vh;
+    min-height: 200px;
+    right: 0;
+  }
+  .lang-switch{top:14px;right:14px;padding:8px 14px;font-size:11px}
+  .screen{padding:56px 26px 46px;margin:4vh auto;width:92vw}
+  h1{margin:20px 0 30px}
+  button{width:84%;margin:8px auto;display:block;letter-spacing:.3em}
+  .back-step-btn{width:auto !important;margin:14px auto 0 !important;display:inline-block !important}
+  .home-history-btn{width:auto !important;display:block !important;margin:18px auto 0 !important}
+  .result{font-size:17px;padding:24px 14px}
+  .gender-side{font-size:15px;letter-spacing:.18em}
+  h2{font-size:16px;letter-spacing:.14em}
+
+  .era-card{padding:14px 16px}
+  .era-card-years{font-size:10px;letter-spacing:.35em;text-indent:.35em}
+  .era-card-desc{font-size:11px;letter-spacing:.1em}
+
+  .continent-grid{gap:12px;max-width:100%;margin:20px auto 20px}
+  .continent-btn{
+    padding:26px 10px 22px;gap:8px;
+    width:100% !important;margin:0 !important;display:flex !important;
+  }
+  .continent-btn.span-2{padding:24px 10px 20px}
+  .cont-name{font-size:15px;letter-spacing:.35em;text-indent:.35em}
+  .cont-sub{font-size:8px;letter-spacing:.32em;text-indent:.32em}
+  .cont-sub::before,.cont-sub::after{width:10px}
+
+  .history-panel{max-height:86vh}
+  .history-header{padding:20px 22px 16px}
+  .history-title{font-size:15px;letter-spacing:.3em;text-indent:.3em}
+  .history-stats{padding:16px 22px 18px}
+  .stats-grid{grid-template-columns:1fr;gap:8px}
+  .stats-value{font-size:13px}
+  .history-item{padding:16px 42px 16px 18px}
+  .history-item::after{left:18px;right:18px}
+  .history-fields{font-size:14px;letter-spacing:.1em}
+  .history-dot{margin:0 6px}
+  .history-footer{padding:14px 22px}
+  .history-delete{opacity:.45 !important}
+  .history-delete:hover{opacity:1 !important}
+}
+@media(max-width:600px){
+  body{ font-size: 15px; }
+
+  /* 标题 */
+  h1{ font-size: clamp(30px, 8vw, 42px); letter-spacing: .16em; }
+  h2{ font-size: clamp(17px, 4.6vw, 22px); letter-spacing: .14em; }
+  .subtitle{ font-size: 14px; letter-spacing: .1em; }
+
+  /* 主卡片：让窄屏更宽 */
+  .screen{ width: 96vw; padding: 48px 20px 44px; }
+
+  /* 结果文字 */
+  .result{ font-size: 18px; letter-spacing: .14em; padding: 24px 12px; }
+  .country-title{ font-size: 13px; letter-spacing: .12em; }
+
+  /* 按钮 */
+  button{ font-size: 15px; letter-spacing: .28em; }
+  .back-step-btn{ font-size: 12px !important; letter-spacing: .28em !important; }
+  .home-history-btn{ font-size: 12px !important; letter-spacing: .3em !important; }
+
+  /* 时代页 */
+  .era-card-years{ font-size: 11px; letter-spacing: .3em; }
+  .era-card-desc{ font-size: 12px; letter-spacing: .08em; }
+  .era-hint{ font-size: 12px; }
+
+  /* 大洲页按钮 */
+  .cont-name{ font-size: 15px; letter-spacing: .3em; }
+  .cont-sub{ font-size: 9px; letter-spacing: .28em; }
+
+  /* 历史面板 */
+  .history-title{ font-size: 16px; letter-spacing: .3em; }
+  .history-fields{ font-size: 15px; letter-spacing: .08em; }
+  .history-time{ font-size: 12px; }
+  .history-count{ font-size: 13px; }
+  .stats-label{ font-size: 11px; }
+  .stats-value{ font-size: 14px; }
+
+  /* 找书页 */
+  .book-card{ padding: 18px 18px; }
+  .book-card-title{ font-size: 17px; letter-spacing: .1em; }
+  .book-card-author{ font-size: 14px; }
+  .book-card-meta{ font-size: 11px; letter-spacing: .16em; }
+  .book-tip{ font-size: 13px; letter-spacing: .16em; }
+
+  /* 首页看板娘：手机上缩小，别挡内容 */
+  .kanban-main{
+    height: 30vh;
+    min-height: 220px;
+    right: -2vw;
+    opacity: .95;
+  }
+  /* 首页卡片给看板娘让出下方空间 */
+  #homeScreen{ padding-bottom: 14vh; }
+  /* EN 按钮：手机上恢复成小方块 */
+  .lang-switch{
+    width: auto !important;
+    min-width: 56px !important;
+    margin: 0 !important;
+    display: block !important;
+    padding: 8px 14px !important;
+    font-size: 11px !important;
+    right: 14px !important;
+    top: 14px !important;
+  }
+}

@@ -1,0 +1,26 @@
+.sea{
+  position:relative;display:flex;
+  margin:34px auto;width:100%;height:150px;
+  border:1px solid var(--gold-soft);
+  overflow:hidden;background:#f4ebd4;
+  box-shadow:inset 0 0 0 1px var(--milk), inset 0 0 0 2px var(--gold-faint);
+}
+.gender-side{
+  width:50%;display:flex;align-items:center;justify-content:center;
+  font-size:18px;letter-spacing:.3em;
+  color:var(--ink);font-weight:500;
+}
+.female-side{background:linear-gradient(180deg, #f0e0c2 0%, #e0cba4 100%);}
+.male-side{background:linear-gradient(180deg, #cfb68e 0%, #ab8e64 100%);}
+.boat{
+  position:absolute;top:52px;left:50%;
+  transform:translateX(-50%);
+  font-size:38px;
+  transition:left .35s cubic-bezier(.4,0,.2,1);
+  filter:drop-shadow(0 4px 8px rgba(45,26,16,.35));
+}
+.boat.swaying{animation:boatSway 1.1s ease-in-out infinite alternate;}
+@keyframes boatSway{
+  from{transform:translateX(-50%) rotate(-6deg)}
+  to{transform:translateX(-50%) rotate(6deg)}
+}
