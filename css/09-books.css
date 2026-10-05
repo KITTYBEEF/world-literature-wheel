@@ -66,3 +66,24 @@
   padding:16px 20px 8px;
   line-height:2;
 }
+.library-note{
+    text-align:center;
+    font-size:11px;
+    letter-spacing:.22em;
+    color:var(--ink-3);
+    opacity:.75;
+    margin:36px auto 0;
+    line-height:2.2;
+    max-width:440px;
+}
+.library-note a{
+    color:var(--gold-dk);
+    text-decoration:none;
+    border-bottom:1px solid var(--gold-faint);
+    transition:all .3s ease;
+    padding:0 2px;
+}
+.library-note a:hover{
+    color:var(--gold);
+    border-color:var(--gold);
+}
