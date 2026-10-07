@@ -273,7 +273,7 @@
         <button class="see-more-btn" id="seeMoreBtn" onclick="showMoreBooks()" data-i18n="btnSeeMore">查看更多</button>
     </div>
     <button class="back-step-btn" onclick="goBack('final')" data-i18n="btnBack">返回上一步</button>
-    <button class="back-step-btn" onclick="goBack('home')" data-i18n="btnBackHome">返回主界面</button>
+    <button class="back-step-btn" onclick="restartJourney()" data-i18n="btnRestart">重新开始</button>
     <p class="library-note">
         <span data-i18n="libraryNote">书库持续校对中，如有错误欢迎</span>
         <a href="https://github.com/KITTYBEEF/world-literature-wheel/issues/new" target="_blank" rel="noopener" data-i18n="libraryLinkGithub">在 GitHub 留言</a>
@@ -329,12 +329,15 @@
 
     <!-- 躯干 -->
     <div class="kanban-breath-torso">
-      <img class="kanban-layer" src="kanban-torso.webp" alt="">
+      <img class="kanban-layer" src="kanban-breath-torso.webp" alt="">
     </div>
-
     <!-- 桌子 -->
     <img class="kanban-layer kanban-table" src="kanban-table.webp" alt="">
 
+    <!-- 补片：填补躯干和胳膊之间的空隙 -->
+    <div class="kanban-patch">
+      <img class="kanban-layer" src="kanban-patch.webp" alt="">
+    </div>
     <!-- 胳膊 -->
     <div class="kanban-breath-arm">
       <img class="kanban-layer" src="kanban-arm.webp" alt="">
@@ -350,6 +353,10 @@
       </div>
     </div>
 
+    <!-- 手部图层1 -->
+    <div class="kanban-hand1">
+      <img class="kanban-layer" src="kanban-hand1.webp" alt="">
+    </div>
   </div>
 </div>
 <!-- 预加载 pet 图片（浏览器解析到这里就会立刻开始下载） -->
@@ -380,6 +387,5 @@
 <script src="js/11-kanban.js"></script>
 <script src="js/12-main.js"></script>
 <script src="js/13-share.js"></script>
-<script>
 </body>
 </html>

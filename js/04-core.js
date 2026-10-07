@@ -182,13 +182,16 @@ function getEraMeta(era){
 }
 
 function getRangeText(){
-  if (chosenContinent === "不限") return t("rangeAll");
-  if (chosenContinent === "随机") return t("rangeRandom");
-  // 大洲名：内部是中文，显示要按语言
-  const contMap = { "亚洲":"contAsia","欧洲":"contEurope","非洲":"contAfrica","美洲":"contAmericas","大洋洲":"contOceania" };
-  return t(contMap[chosenContinent] || chosenContinent);
+    const contMap = { "亚洲":"contAsia","欧洲":"contEurope","非洲":"contAfrica","美洲":"contAmericas","大洋洲":"contOceania" };
+    if (chosenContinent === "不限") return t("rangeAll");
+    if (chosenContinent === "随机"){
+        if (pickedContinentThisDraw){
+            return t("rangeRandom") + "（" + t(contMap[pickedContinentThisDraw] || pickedContinentThisDraw) + "）";
+        }
+        return t("rangeRandom");
+    }
+    return t(contMap[chosenContinent] || chosenContinent);
 }
-
 /* ====================================================
    通用
    ==================================================== */

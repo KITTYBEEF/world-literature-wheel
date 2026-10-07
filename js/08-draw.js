@@ -21,16 +21,15 @@ function startCountryDraw(){
     let pool;
     if (chosenContinent === "不限"){ pool = [...eraPool]; pickedContinentThisDraw = ""; }
     else if (chosenContinent === "随机"){
-        const availableConts = Object.keys(continents).filter(k => continents[k].some(x => eraPoolSet.has(x)));
-        pickedContinentThisDraw = randomChoice(availableConts);
-        pool = continents[pickedContinentThisDraw].filter(c => eraPoolSet.has(c));
+        // 大洲已经在点按钮时抽好了，直接用
+        const contKey = pickedContinentThisDraw;
+        pool = (continents[contKey] || []).filter(c => eraPoolSet.has(c));
+        if (pool.length === 0) pool = [...eraPool];
     }
     else {
         pickedContinentThisDraw = chosenContinent;
         pool = continents[chosenContinent].filter(c => eraPoolSet.has(c));
     }
-    if (!pool || pool.length === 0) pool = [...eraPool];
-
     // 保存联动用的状态
     isDrawingCountry = true;
     drawingEraForLon = selectedEra;

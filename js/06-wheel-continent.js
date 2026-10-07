@@ -261,12 +261,28 @@ function goToContinent(){
 }
 
 function chooseContinent(c){
-    const changed = (chosenContinent !== c);
+    const oldCont = chosenContinent;
+    const oldPicked = pickedContinentThisDraw;
     chosenContinent = c;
+
+    if (c === "随机"){
+        const eraPool = getEraCountries(selectedEra);
+        const eraPoolSet = new Set(eraPool);
+        const availableConts = Object.keys(continents).filter(k =>
+            continents[k].some(x => eraPoolSet.has(x))
+        );
+        pickedContinentThisDraw = randomChoice(availableConts);
+    } else {
+        pickedContinentThisDraw = "";
+    }
+
+    const realChanged = (oldCont !== c) || (oldPicked !== pickedContinentThisDraw);
+
     document.querySelectorAll(".continent-btn").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.continent === c);
     });
-    if (changed){
+
+    if (realChanged){
         selectedCountry = "";
         document.getElementById("countryResult").textContent = t("notDrawn");
         document.getElementById("countryActions").classList.add("hidden");
@@ -276,7 +292,6 @@ function chooseContinent(c){
     }
     goToCountry();
 }
-
 function goToCountry(){
     showScreen("countryScreen");
     document.getElementById("countryEra").textContent = t("prefixEra") + getEraName(selectedEra);
@@ -298,16 +313,18 @@ function refreshCountryManualSelect(){
     const eraPoolSet = new Set(eraPool);
 
     let pool;
-    if (chosenContinent === "不限" || chosenContinent === "随机"){
-        // 「不限」或「随机大洲」→ 时代池里的所有国家
+    if (chosenContinent === "不限"){
         pool = eraPool;
+    } else if (chosenContinent === "随机"){
+        pool = (continents[pickedContinentThisDraw] || []).filter(c => eraPoolSet.has(c));
+        if (pool.length === 0) pool = eraPool;
     } else {
-        // 指定大洲 → 时代池 ∩ 该大洲
         pool = (continents[chosenContinent] || []).filter(c => eraPoolSet.has(c));
     }
     if (!pool || pool.length === 0) pool = eraPool;
 
-    let html = '<option value="" data-i18n="optOrCustom">' + t("optOrCustom") + '</option>';    pool.forEach(c => {
+    let html = '<option value="" data-i18n="optOrCustom">' + t("optOrCustom") + '</option>';
+    pool.forEach(c => {
         html += '<option value="' + c + '">' + getCountryName(selectedEra, c) + '</option>';
     });
     sel.innerHTML = html;

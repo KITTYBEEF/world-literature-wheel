@@ -1,6 +1,51 @@
 /* ====================================================
    找书
    ==================================================== */
+/* ====================================================
+   自动生成“找到这本书”的链接面板
+   ==================================================== */
+function createBookLinksHTML(book) {
+  // 用书名 + 作者拼搜索词，自动处理中文和特殊符号
+  const query = encodeURIComponent(book.title + ' ' + book.author);
+  
+  // 检查你有没有手动配专属链接
+  let manualHTML = '';
+  if (book.links) {
+    if (book.links.official) manualHTML += '<a href="' + book.links.official + '" target="_blank" rel="noopener" class="book-link-btn manual">🏛️ 出版社页面</a>';
+    if (book.links.reading)  manualHTML += '<a href="' + book.links.reading + '" target="_blank" rel="noopener" class="book-link-btn manual">📖 在线阅读</a>';
+    if (book.links.audio)    manualHTML += '<a href="' + book.links.audio + '" target="_blank" rel="noopener" class="book-link-btn manual">🎧 有声书</a>';
+  }
+  
+  const manualSection = manualHTML ? 
+    '<div class="book-links-group">' +
+      '<span class="book-links-label">✨ 专属链接</span>' +
+      '<div class="book-links-row">' + manualHTML + '</div>' +
+    '</div>' : '';
+    
+  return (
+    '<div class="book-links-panel">' +
+      '<div class="book-links-header">📖 找到这本书</div>' +
+      '<div class="book-links-tip">想继续了解这本书？你可以从下面的入口寻找它。部分书籍可能只能通过图书馆、出版社或二手书渠道找到。</div>' +
+      manualSection +
+      '<div class="book-links-group">' +
+        '<span class="book-links-label">🔎 搜索</span>' +
+        '<div class="book-links-row">' +
+          '<a href="https://books.google.com/books?q=' + query + '" target="_blank" rel="noopener" class="book-link-btn">📚 Google Books</a>' +
+          '<a href="https://search.worldcat.org/search?q=' + query + '" target="_blank" rel="noopener" class="book-link-btn">🌐 WorldCat</a>' +
+          '<a href="https://archive.org/search?query=' + query + '" target="_blank" rel="noopener" class="book-link-btn">🏛️ Internet Archive</a>' +
+        '</div>' +
+      '</div>' +
+      '<div class="book-links-group">' +
+        '<span class="book-links-label">🌐 其他</span>' +
+        '<div class="book-links-row">' +
+          '<a href="https://www.google.com/search?q=' + query + '" target="_blank" rel="noopener" class="book-link-btn">🔍 Google 搜索</a>' +
+          '<a href="https://search.douban.com/book/subject_search?search_text=' + query + '" target="_blank" rel="noopener" class="book-link-btn">🟢 豆瓣</a>' +
+          '<a href="https://weread.qq.com/web/search/books?keyword=' + query + '" target="_blank" rel="noopener" class="book-link-btn">📱 微信读书</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
 async function goToFindBook(){
     showScreen('findBookScreen');
     const list = document.getElementById("findBookList");
@@ -96,18 +141,38 @@ function renderFindBook(){
   books.forEach(b => {
     const card = document.createElement("div");
     card.className = "book-card";
+    card.style.cursor = "pointer"; // 鼠标移上去变小手
+    
     const meta = [
       getCountryName(selectedEra, b.country),
       getGenderName(b.gender),
       getGenreName(b.genre)
     ].join(" · ");
+    
+    // 把链接面板一起塞进卡片里
+    const linksHTML = createBookLinksHTML(b);
+    
     card.innerHTML =
       '<div class="book-card-title">《' + b.title + '》</div>' +
       '<div class="book-card-author">' + b.author + '</div>' +
-      '<div class="book-card-meta">' + meta + '</div>';
+      '<div class="book-card-meta">' + meta + '</div>' +
+      '<span class="book-card-arrow">▼</span>' +
+      linksHTML;
+      
+    // 点击卡片：展开或收起链接面板
+    card.addEventListener('click', function(e) {
+      // 如果点的是具体链接，不要触发展开/收起
+      if (e.target.tagName === 'A' || e.target.closest('a')) return;
+      
+      const panel = card.querySelector('.book-links-panel');
+      if (panel) {
+        panel.classList.toggle('open');
+        card.classList.toggle('expanded');
+      }
+    });
+    
     container.appendChild(card);
   });
-
   // 匹配总数 > 3 才显示"查看更多"
   if (seeMoreWrap && result.total > 3){
     seeMoreWrap.style.display = "block";
@@ -176,17 +241,35 @@ function showMoreBooks(){
       card.style.margin = "10px 0";
       card.style.padding = "16px 20px";
       card.style.maxWidth = "100%";
+      card.style.cursor = "pointer"; // 鼠标移上去变小手
+
       const meta = [
         getCountryName(selectedEra, b.country),
         getGenreName(b.genre)
       ].join(" · ");
+
+      // 注意：这里也加上链接面板
+      const linksHTML = createBookLinksHTML(b);
+
       card.innerHTML =
         '<div class="book-card-title" style="font-size:16px;">《' + b.title + '》</div>' +
         '<div class="book-card-author" style="font-size:13px;">' + b.author + '</div>' +
-        '<div class="book-card-meta">' + meta + '</div>';
+        '<div class="book-card-meta">' + meta + '</div>' +
+        '<span class="book-card-arrow">▼</span>' +
+        linksHTML;
+
+      // 给“查看更多”里的卡片也加上展开/收起功能
+      card.addEventListener('click', function(e) {
+        if (e.target.tagName === 'A' || e.target.closest('a')) return;
+        const panel = card.querySelector('.book-links-panel');
+        if (panel) {
+          panel.classList.toggle('open');
+          card.classList.toggle('expanded');
+        }
+      });
+
       section.appendChild(card);
     });
-
     body.appendChild(section);
   });
 

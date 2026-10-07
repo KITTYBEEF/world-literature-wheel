@@ -100,3 +100,11 @@
 }
 .continent-btn.disabled::before{border-color:rgba(184,147,90,.14);}
 .continent-btn.disabled::after{opacity:0;}
+/* =========== 四个手动下拉框：文字居中 =========== */
+#eraManualSelect,
+#countryManualSelect,
+#genderManualSelect,
+#genreManualSelect{
+  text-align:center;
+  text-align-last:center;
+}

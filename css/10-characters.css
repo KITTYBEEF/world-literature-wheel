@@ -3,7 +3,8 @@
   right: 2vw;
   bottom: 0;
   z-index: 5;
-  pointer-events: none;
+  pointer-events: auto; /* 允许点击 */
+  cursor: pointer;       /* 鼠标移上去变成小手 */
   user-select: none;
   height: 55vh;
   min-height: 380px;
@@ -32,7 +33,7 @@
   inset: 0;
   z-index: 1;
   transform-origin: bottom center;
-  animation: kanbanBreath 4.5s ease-in-out infinite;
+  animation: kanbanBreath 3.5s ease-in-out infinite;
   will-change: transform;
 }
 
@@ -49,25 +50,28 @@
   inset: 0;
   z-index: 3;
   transform-origin: bottom center;
-  animation: kanbanBreath 4.5s ease-in-out infinite;
+  animation: kanbanBreathArm 3.5s ease-in-out infinite;
   will-change: transform;
 }
-
 /* 头 + 眼睛（最上） */
 .kanban-head-group{
   position: absolute;
   inset: 0;
   z-index: 10;
   transform-origin: bottom center;
-  animation: kanbanBreath 4.5s ease-in-out infinite;
+  animation: kanbanBreath 3.5s ease-in-out infinite;
   will-change: transform;
 }
 
 @keyframes kanbanBreath{
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-8px); }
+  50%      { transform: translateY(-1.5px); }
 }
 
+@keyframes kanbanBreathArm{
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(0); }
+}
 .kanban-eye-group{
   position: absolute;
   inset: 0;
@@ -270,5 +274,37 @@
     font-size: 11px !important;
     right: 14px !important;
     top: 14px !important;
+  }
+}
+/* =========== 看板娘补片图层 =========== */
+.kanban-patch {
+  position: absolute;
+  inset: 0;
+  z-index: 2.5;
+  transform-origin: bottom center;
+  animation: kanbanBreath 3.5s ease-in-out infinite; /* 跟着躯干一起浮动，死盖缝隙 */
+  will-change: transform;
+  pointer-events: none; /* 不遮挡点击 */
+}
+
+/* =========== 看板娘手部图层 =========== */
+.kanban-hand1 {
+  position: absolute;
+  inset: 0;
+  z-index: 20; /* 最顶层，盖过头和眼睛 */
+  transform-origin: bottom center;
+  animation: none; /* 胳膊彻底不动，手也跟着绝对静止 */
+  will-change: transform;
+  pointer-events: none; /* 不遮挡鼠标点击 */
+}
+/* =========== 手机端：关闭看板娘浮动，防止各种空隙 =========== */
+@media(max-width: 600px){
+  .kanban-breath-torso,
+  .kanban-breath-arm,
+  .kanban-patch,
+  .kanban-hand1,
+  .kanban-head-group {
+    animation: none !important;
+    transform: translateY(0) !important; /* 强制归位，杜绝错位 */
   }
 }

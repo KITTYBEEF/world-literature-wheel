@@ -99,3 +99,87 @@
     color:var(--gold);
     border-color:var(--gold);
 }
+/* =========== 找书链接面板 =========== */
+.book-links-panel {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 1px solid transparent;
+  transition: max-height 0.4s ease-out, opacity 0.4s ease-out, margin-top 0.4s ease-out, padding-top 0.4s ease-out;
+}
+
+.book-links-panel.open {
+  max-height: 600px;
+  opacity: 1;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gold-faint);
+}
+
+.book-links-header {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.book-links-tip {
+  font-size: 11px;
+  color: var(--ink-3);
+  line-height: 1.8;
+  margin-bottom: 14px;
+}
+
+.book-links-group {
+  margin-bottom: 12px;
+}
+
+.book-links-label {
+  display: block;
+  font-size: 10px;
+  color: var(--gold-dk);
+  letter-spacing: 0.25em;
+  margin-bottom: 8px;
+  opacity: 0.85;
+}
+
+.book-links-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.book-link-btn {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--ink-3);
+  background: rgba(201, 169, 97, 0.06);
+  border: 1px solid var(--gold-faint);
+  border-radius: 2px;
+  text-decoration: none;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.book-link-btn:hover {
+  color: #fffaf0;
+  background: linear-gradient(180deg, #e3c98b 0%, #a8873f 100%);
+  border-color: var(--gold-dk);
+  box-shadow: 0 4px 10px rgba(138, 106, 63, 0.2);
+}
+
+.book-link-btn.manual {
+  background: rgba(184, 147, 90, 0.12);
+  border-color: var(--gold-soft);
+  color: var(--gold-dk);
+  font-weight: 500;
+}
+
+.book-link-btn.manual:hover {
+  color: #fffaf0;
+  background: linear-gradient(180deg, #e3c98b 0%, #a8873f 100%);
+}
