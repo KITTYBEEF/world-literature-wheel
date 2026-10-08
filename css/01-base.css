@@ -168,3 +168,37 @@ h2::after{
 .era-card-desc{
   font-size:12px;letter-spacing:.14em;line-height:2;color:var(--ink-3);
 }
+/* =========== 主页测试搜索框 =========== */
+.home-search{
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 28px auto 0;
+    max-width: 340px;
+}
+.home-search input{
+    flex: 1;
+    min-width: 0;
+    padding: 8px 14px;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: .1em;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--gold-faint);
+    border-radius: 3px;
+    outline: none;
+    transition: border-color .3s ease;
+}
+.home-search input:focus{
+    border-color: var(--gold-soft);
+}
+.home-search button{
+    min-width: 0 !important;
+    width: auto !important;
+    padding: 8px 16px !important;
+    margin: 0 !important;
+    font-size: 12px !important;
+    letter-spacing: .2em !important;
+    display: inline-block !important;
+}

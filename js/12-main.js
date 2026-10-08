@@ -34,3 +34,38 @@ function initClickToDraw(){
 initClickToDraw();
 initKanban();
 initGlobe();
+
+/* ====================================================
+   主页测试搜索：输入书名直接跳到找书页
+   ==================================================== */
+async function homeSearchBook(){
+    const input = document.getElementById('homeSearchInput');
+    const keyword = input ? input.value.trim() : '';
+    if (!keyword) return;
+
+    // 书库没加载就先加载（第一次搜索会慢一点）
+    if (!booksLoaded){
+        if (input) input.placeholder = '加载书库中……';
+        await loadBooks();
+        if (input) input.placeholder = '测试：输入书名';
+    }
+
+    // 模糊匹配书名
+    const found = BOOKS.find(b => b.title.includes(keyword));
+    if (!found){
+        alert('没找到包含「' + keyword + '」的书');
+        return;
+    }
+
+    // 把这本书的所有属性写进当前状态
+    selectedEra = found.era;
+    selectedCountry = found.country;
+    selectedGender = found.gender;
+    selectedGenre = found.genre;
+    chosenContinent = "不限";
+    pickedContinentThisDraw = "";
+    currentJourneySaved = true; // 测试用，不写入历史记录
+
+    // 跳到找书页
+    await goToFindBook();
+}

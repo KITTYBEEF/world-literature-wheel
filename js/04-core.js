@@ -126,6 +126,7 @@ function refreshDynamicContent(){
     const meta = getEraMeta(selectedEra);
     document.getElementById("eraCardYears").textContent = meta.years;
     document.getElementById("eraCardDesc").textContent = meta.desc;
+   document.getElementById("eraCardFeeling").textContent = meta.feeling || "";
     const eraPool = getEraCountries(selectedEra);
     document.getElementById("continentHint").textContent = t("hintAvailable").replace("{n}", eraPool.length);
     // 刷新每个按钮的副文本
@@ -177,8 +178,8 @@ function toggleLanguage(){
 }
 
 function getEraMeta(era){
-  if (currentLang === "en") return ERA_META_EN[era] || { years:"", desc:"" };
-  return eraMeta[era] || { years:"", desc:"" };
+  if (currentLang === "en") return ERA_META_EN[era] || { years:"", desc:"", feeling:"" };
+  return eraMeta[era] || { years:"", desc:"", feeling:"" };
 }
 
 function getRangeText(){
@@ -231,6 +232,10 @@ function goBack(target){
         showScreen("genderScreen");
         document.getElementById("genderEraText").textContent = t("prefixEra") + getEraName(selectedEra);
         document.getElementById("genderCountryText").textContent = t("prefixCountry") + getCountryName(selectedEra, selectedCountry);
+    }
+       else if (target === "genre"){
+        goToGenre();
+        currentJourneySaved = false;
     }
     else if (target === "final"){ showScreen("finalScreen"); }
 }

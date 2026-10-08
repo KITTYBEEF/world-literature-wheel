@@ -246,6 +246,7 @@ function goToContinent(){
     const meta = getEraMeta(selectedEra);
     document.getElementById("eraCardYears").textContent = meta.years;
     document.getElementById("eraCardDesc").textContent = meta.desc;
+        document.getElementById("eraCardFeeling").textContent = meta.feeling || "";
 
     const eraPool = getEraCountries(selectedEra);
     const eraPoolSet = new Set(eraPool);

@@ -110,3 +110,22 @@
 .book-card.expanded .book-card-arrow {
   transform: rotate(180deg);
 }
+/* =========== 书籍原名 =========== */
+.book-card-original-title {
+  font-size: 12px;
+  color: var(--gold-dk);
+  opacity: 0.75;
+  margin-top: -2px;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+  font-family: "Noto Serif SC", "Times New Roman", "Arial Unicode MS", sans-serif;
+  line-height: 1.5;
+}
+/* =========== 作者原名 =========== */
+.book-card-original-author {
+  font-size: 11px;
+  color: var(--ink-3);
+  opacity: 0.8;
+  margin-left: 4px;
+  font-family: "Times New Roman", "Arial Unicode MS", sans-serif;
+}

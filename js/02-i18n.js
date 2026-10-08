@@ -39,6 +39,7 @@ const UI = {
     countryTitle: "请抽取你即将要拜访的国家",
     prefixEra: "你选择的时代是：",
     prefixRange: "你选择的范围是：",
+    prefixCountry: "你选择的国家是：",
     prefixVisit: "你即将拜访：",
     rangeAll: "全世界",
     rangeRandom: "随机大洲",
@@ -46,7 +47,7 @@ const UI = {
     genderTitle: "您将由哪一种性别的作家带入文学世界？",
     gFemale: "女性作家",
     gMale: "男性作家",
-    prefixCountry: "你选择的国家是：",
+    gUnknown: "性别未确认",
     msgWillLead: "将由{name}带你进入文学世界",
     genreTitle: "请抽取你即将阅读的文学文体",
     prefixGender: "你选择的作家性别是：",
@@ -116,6 +117,7 @@ const UI = {
     countryTitle: "Draw the country you will visit",
     prefixEra: "Selected era: ",
     prefixRange: "Selected range: ",
+    prefixCountry: "Selected country: ",
     prefixVisit: "You will visit: ",
     rangeAll: "Whole World",
     rangeRandom: "Random Continent",
@@ -123,6 +125,7 @@ const UI = {
     genderTitle: "Which gender of writer will lead you into the literary world?",
     gFemale: "Female Writer",
     gMale: "Male Writer",
+    gUnknown: "Gender Unconfirmed",
     prefixCountry: "Selected country: ",
     msgWillLead: "{name} will lead you into the literary world",
     genreTitle: "Draw the literary form you will read",
@@ -217,21 +220,22 @@ const ERA_COUNTRY_DISPLAY_EN = {
 };
 
 const ERA_META_EN = {
-  "史前":       { years:"c. 3,000,000 BCE – 3500 BCE", desc:"Human origins, hunter-gatherers, agricultural revolution" },
-  "早期文明":   { years:"3500 BCE – 1200 BCE",         desc:"Sumer, Egypt, Indus Valley, Shang, Olmec independently develop writing and cities" },
-  "古典时代":   { years:"1200 BCE – 500 CE",           desc:"Greece and Rome, Persia, Maurya, Qin-Han, Maya; Axial Age thought" },
-  "后古典时代": { years:"500 – 1500 CE",               desc:"Islamic Golden Age, Tang-Song-Yuan-Ming, Medieval Europe, Maya/Aztec/Inca" },
-  "近代早期":   { years:"1500 – 1800",                 desc:"Age of Discovery, colonization, Renaissance, Scientific Revolution, Ming-Qing" },
-  "工业与帝国": { years:"1800 – 1914",                 desc:"Industrial Revolution, imperialism, nation-states; Europe dominates" },
-  "全球冲突":   { years:"1914 – 1991",                 desc:"WWI, WWII, Cold War, decolonization; old empires collapse" },
-  "当代":       { years:"1991 – Present",              desc:"Globalization, internet, information age; literature becomes multicultural" }
+  "史前":       { years:"c. 3,000,000 BCE – 3500 BCE", desc:"Human origins, hunter-gatherers, agricultural revolution", feeling:"Campfire, cave, gods and oral tradition" },
+  "早期文明":   { years:"3500 BCE – 1200 BCE",         desc:"Sumer, Egypt, Indus Valley, Shang, Olmec independently develop writing and cities", feeling:"Birth of writing, kingship, myth and epic" },
+  "古典时代":   { years:"1200 BCE – 500 CE",           desc:"Greece and Rome, Persia, Maurya, Qin-Han, Maya; Axial Age thought", feeling:"Philosophy, drama, empire and the Axial Age" },
+  "后古典时代": { years:"500 – 1500 CE",               desc:"Islamic Golden Age, Tang-Song-Yuan-Ming, Medieval Europe, Maya/Aztec/Inca", feeling:"Religion, chivalry, travel and romance" },
+  "近代早期":   { years:"1500 – 1800",                 desc:"Age of Discovery, colonization, Renaissance, Scientific Revolution, Ming-Qing", feeling:"Voyage, colonization, science and Renaissance" },
+  "工业与帝国": { years:"1800 – 1914",                 desc:"Industrial Revolution, imperialism, nation-states; Europe dominates", feeling:"City, factory, nation-state and realism" },
+  "全球冲突":   { years:"1914 – 1991",                 desc:"WWI, WWII, Cold War, decolonization; old empires collapse", feeling:"War, revolution, modernism and Cold War" },
+  "当代":       { years:"1991 – Present",              desc:"Globalization, internet, information age; literature becomes multicultural", feeling:"Globalization, internet and multiculturalism" }
 };
 
 /* 性别/文体英文映射 */
-const GENDER_EN = { "女性作家":"Female Writer", "男性作家":"Male Writer" };
+const GENDER_EN = { "女性作家":"Female Writer", "男性作家":"Male Writer", "性别未确认":"Unknown" };
 const GENRE_EN = {
   "小说":"Novel","诗歌":"Poetry","戏剧":"Drama","散文":"Prose","书信":"Letters",
-  "日记":"Diary","寓言":"Fable","史诗":"Epic","传记文学":"Biography","旅行文学":"Travel Writing"
+  "日记":"Diary","寓言":"Fable","史诗":"Epic","传记文学":"Biography","旅行文学":"Travel Writing",
+  "神话":"Myth","古代文献":"Ancient Texts"
 };
 
 function getCountryName(era, country){

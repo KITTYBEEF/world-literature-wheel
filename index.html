@@ -48,8 +48,11 @@
     <p class="subtitle" data-i18n="homeSubtitle">让随机性带你遇见陌生的文学世界</p>
     <button onclick="startJourney()" data-i18n="btnStart">开始</button>
     <button class="home-history-btn" onclick="openHistory()" data-i18n="btnHistory">查看历史记录</button>
+    <div class="home-search">
+        <input type="text" id="homeSearchInput" placeholder="测试：输入书名" onkeypress="if(event.key==='Enter') homeSearchBook()">
+        <button onclick="homeSearchBook()">跳转</button>
+    </div>
 </section>
-
 <section id="eraScreen" class="screen hidden">
     <h2 data-i18n="eraTitle">请抽取你即将到达的文学时间段</h2>
     <div class="wheel-stage">
@@ -87,7 +90,8 @@
     <div class="era-card" id="eraCard">
         <div class="era-card-years" id="eraCardYears"></div>
         <div class="era-card-desc" id="eraCardDesc"></div>
-    </div>
+        <div class="era-card-feeling" id="eraCardFeeling" style="font-size:11px;letter-spacing:.16em;color:var(--gold-dk);margin-top:8px;font-style:italic;opacity:.8;"></div>
+            </div>
     <p id="continentHint" class="era-hint"></p>
 
     <div class="continent-grid">
@@ -188,6 +192,7 @@
     <p id="genderCountryText" class="country-title"></p>
     <div class="sea">
         <div class="gender-side female-side" data-i18n="gFemale">女性作家</div>
+        <div class="gender-side unknown-side" data-i18n="gUnknown">性别未确认</div>
         <div class="gender-side male-side" data-i18n="gMale">男性作家</div>
         <div id="boat" class="boat">⛵</div>
     </div>
@@ -196,6 +201,7 @@
         <select id="genderManualSelect" onchange="manualSelectGender(this.value)" style="font-family:inherit;font-size:12px;letter-spacing:.2em;padding:6px 14px;color:#8b6a4e;background:transparent;border:1px solid rgba(184,147,90,.25);border-radius:3px;cursor:pointer;outline:none;">
 <option value="" data-i18n="optOrCustom">— 或者自选 —</option>
             <option value="女性作家">女性作家</option>
+            <option value="性别未确认">性别未确认</option>
             <option value="男性作家">男性作家</option>
         </select>
     </div>
@@ -238,6 +244,8 @@
             <option value="史诗">史诗</option>
             <option value="传记文学">传记文学</option>
             <option value="旅行文学">旅行文学</option>
+            <option value="神话">神话</option>
+            <option value="古代文献">古代文献</option>
         </select>
     </div>
     <div id="genreResult" class="result" data-i18n="notDrawn">尚未抽取</div>
@@ -257,15 +265,16 @@
         <p id="finalGenre"></p>
     </div>
     <p class="subtitle" data-i18n="finalQuote">愿你在陌生的文学世界中，遇见意料之外的思想与灵魂</p>
-    <div class="final-actions">
-        <button class="final-primary" onclick="goToFindBook()" data-i18n="btnFindBook">找书</button>
-        <div class="final-secondary">
-            <button onclick="downloadShareCard()" data-i18n="btnShareCard">保存分享卡</button>
-            <button id="restartJourneyBtn" onclick="restartJourney()" data-i18n="btnRestart">重新开始</button>
-            <button id="exitToHistoryBtn" onclick="exitToHistory()" class="hidden" data-i18n="btnExitHistory">退出</button>
-        </div>
-    </div>
-</section>
+            <div class="final-actions">
+                <button class="final-primary" onclick="goToFindBook()" data-i18n="btnFindBook">找书</button>
+                <div class="final-secondary">
+                    <button onclick="downloadShareCard()" data-i18n="btnShareCard">保存分享卡</button>
+                    <button id="restartJourneyBtn" onclick="restartJourney()" data-i18n="btnRestart">重新开始</button>
+                    <button id="exitToHistoryBtn" onclick="exitToHistory()" class="hidden" data-i18n="btnExitHistory">退出</button>
+                </div>
+                <button class="back-step-btn" onclick="goBack('genre')" data-i18n="btnBack">返回上一步</button>
+            </div>
+        </section>
 <section id="findBookScreen" class="screen hidden">
     <h2 data-i18n="findBookTitle">为你找到的书</h2>
     <div id="findBookList" style="margin:24px 0;color:#8b6a4e;font-size:14px;letter-spacing:.2em;">（待填数据）</div>

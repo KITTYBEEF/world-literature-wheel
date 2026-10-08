@@ -152,14 +152,21 @@ function renderFindBook(){
     // 把链接面板一起塞进卡片里
     const linksHTML = createBookLinksHTML(b);
     
+    let titleHTML = '<div class="book-card-title">《' + b.title + '》</div>';
+    if (b.originalTitle) {
+        titleHTML += '<div class="book-card-original-title">' + b.originalTitle + '</div>';
+    }
+    let authorHTML = '<div class="book-card-author">' + b.author + '</div>';
+    if (b.originalAuthor) {
+        authorHTML = '<div class="book-card-author">' + b.author + ' <span class="book-card-original-author">' + b.originalAuthor + '</span></div>';
+    }
     card.innerHTML =
-      '<div class="book-card-title">《' + b.title + '》</div>' +
-      '<div class="book-card-author">' + b.author + '</div>' +
+      titleHTML +
+      authorHTML +
       '<div class="book-card-meta">' + meta + '</div>' +
       '<span class="book-card-arrow">▼</span>' +
       linksHTML;
-      
-    // 点击卡片：展开或收起链接面板
+          // 点击卡片：展开或收起链接面板
     card.addEventListener('click', function(e) {
       // 如果点的是具体链接，不要触发展开/收起
       if (e.target.tagName === 'A' || e.target.closest('a')) return;
@@ -251,14 +258,21 @@ function showMoreBooks(){
       // 注意：这里也加上链接面板
       const linksHTML = createBookLinksHTML(b);
 
+      let titleHTML = '<div class="book-card-title" style="font-size:16px;">《' + b.title + '》</div>';
+      if (b.originalTitle) {
+          titleHTML += '<div class="book-card-original-title" style="font-size:12px;">' + b.originalTitle + '</div>';
+      }
+      let authorHTML = '<div class="book-card-author" style="font-size:13px;">' + b.author + '</div>';
+      if (b.originalAuthor) {
+          authorHTML = '<div class="book-card-author" style="font-size:13px;">' + b.author + ' <span class="book-card-original-author">' + b.originalAuthor + '</span></div>';
+      }
       card.innerHTML =
-        '<div class="book-card-title" style="font-size:16px;">《' + b.title + '》</div>' +
-        '<div class="book-card-author" style="font-size:13px;">' + b.author + '</div>' +
+        titleHTML +
+        authorHTML +
         '<div class="book-card-meta">' + meta + '</div>' +
         '<span class="book-card-arrow">▼</span>' +
         linksHTML;
-
-      // 给“查看更多”里的卡片也加上展开/收起功能
+           // 给“查看更多”里的卡片也加上展开/收起功能
       card.addEventListener('click', function(e) {
         if (e.target.tagName === 'A' || e.target.closest('a')) return;
         const panel = card.querySelector('.book-links-panel');

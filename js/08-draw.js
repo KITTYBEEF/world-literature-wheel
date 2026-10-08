@@ -63,10 +63,24 @@ function startCountryDraw(){
         PetSystem.reactResult();
     });
 }
-function goToGender(){
-    showScreen("genderScreen");
-    document.getElementById("genderEraText").textContent = t("prefixEra") + getEraName(selectedEra);
-    document.getElementById("genderCountryText").textContent = t("prefixCountry") + getCountryName(selectedEra, selectedCountry);
+function goToGenre(){
+    showScreen("genreScreen");
+    document.getElementById("genreEraText").textContent = t("prefixEra") + getEraName(selectedEra);
+    document.getElementById("genreCountryText").textContent = t("prefixCountry") + getCountryName(selectedEra, selectedCountry);
+    document.getElementById("genreGenderText").textContent = t("prefixGender") + getGenderName(selectedGender);
+    
+    // 动态刷新文体下拉框
+    const sel = document.getElementById("genreManualSelect");
+    if (sel) {
+        const allowed = ERA_GENRES[selectedEra] || genres;
+        let html = '<option value="" data-i18n="optOrCustom">' + t("optOrCustom") + '</option>';
+        allowed.forEach(g => {
+            html += '<option value="' + g + '">' + getGenreName(g) + '</option>';
+        });
+        sel.innerHTML = html;
+    }
+    
+    buildBook();
 }
 
 /* ====================================================
@@ -82,10 +96,98 @@ function manualSelectGender(gender){
     result.textContent = t("msgWillLead").replace("{name}", getGenderName(gender));
     const boat = document.getElementById("boat");
     boat.classList.remove("swaying");
-    boat.style.left = gender === "女性作家" ? "25%" : "75%";
+    if (gender === "女性作家") boat.style.left = "16.6%";
+    else if (gender === "男性作家") boat.style.left = "83.3%";
+    else boat.style.left = "50%";
+        document.getElementById("genderStartButton").classList.add("hidden");
+    document.getElementById("genderActions").classList.remove("hidden");
+}
+function startCountryDraw(){
+    const result = document.getElementById("countryResult");
+    const btn = document.getElementById("countryStartButton");
+    const actions = document.getElementById("countryActions");
+
+    btn.classList.add("hidden");
+    actions.classList.add("hidden");
+    PetSystem.reactDrawStart();
+    clearMarker();
+
+    rotateAnim = null;
+    pendingOnStop = null;
+    globeIdleRotating = false;
+
+    const eraPool = getEraCountries(selectedEra);
+    const eraPoolSet = new Set(eraPool);
+
+    let pool;
+    if (chosenContinent === "不限"){ pool = [...eraPool]; pickedContinentThisDraw = ""; }
+    else if (chosenContinent === "随机"){
+        const contKey = pickedContinentThisDraw;
+        pool = (continents[contKey] || []).filter(c => eraPoolSet.has(c));
+        if (pool.length === 0) pool = [...eraPool];
+    }
+    else {
+        pickedContinentThisDraw = chosenContinent;
+        pool = continents[chosenContinent].filter(c => eraPoolSet.has(c));
+    }
+    isDrawingCountry = true;
+    drawingEraForLon = selectedEra;
+    drawingPool = pool;
+    lastLonUpdate = 0;
+
+    const initCountry = getCountryByLon(-currentLambda, pool);
+    if (initCountry) result.textContent = getCountryName(selectedEra, initCountry);
+
+    startSpin(function(){
+        isDrawingCountry = false;
+        const centerLon = -currentLambda;
+        selectedCountry = getCountryByLon(centerLon, pool) || randomChoice(pool);
+        const coords = countryCoords[selectedCountry] || null;
+        if (coords){
+            setMarker(coords[0], coords[1]);
+            showMarker();
+        }
+
+        const displayCountry = getCountryName(selectedEra, selectedCountry);
+        if (chosenContinent === "随机" && pickedContinentThisDraw){
+            const contMap = { "亚洲":"contAsia","欧洲":"contEurope","非洲":"contAfrica","美洲":"contAmericas","大洋洲":"contOceania" };
+            result.textContent = t("prefixVisit") + displayCountry + "（" + t(contMap[pickedContinentThisDraw]) + "）";
+        } else {
+            result.textContent = t("prefixVisit") + displayCountry;
+        }
+        actions.classList.remove("hidden");
+        PetSystem.reactResult();
+    });
+}
+
+/* ====================================================
+   前往性别选择页
+   ==================================================== */
+function goToGender(){
+    showScreen("genderScreen");
+    document.getElementById("genderEraText").textContent = t("prefixEra") + getEraName(selectedEra);
+    document.getElementById("genderCountryText").textContent = t("prefixCountry") + getCountryName(selectedEra, selectedCountry);
+}
+/* ====================================================
+   抽性别
+   ==================================================== */
+function manualSelectGender(gender){
+    if (!gender) return;
+    selectedGender = gender;
+    const sel = document.getElementById("genderManualSelect");
+    if (sel) sel.value = "";
+    clearInterval(genderTimer);
+    const result = document.getElementById("genderResult");
+    result.textContent = t("msgWillLead").replace("{name}", getGenderName(gender));
+    const boat = document.getElementById("boat");
+    boat.classList.remove("swaying");
+    if (gender === "女性作家") boat.style.left = "16.6%";
+    else if (gender === "男性作家") boat.style.left = "83.3%";
+    else boat.style.left = "50%";
     document.getElementById("genderStartButton").classList.add("hidden");
     document.getElementById("genderActions").classList.remove("hidden");
 }
+
 function startGenderDraw(){
     const result = document.getElementById("genderResult");
     const btn = document.getElementById("genderStartButton");
@@ -107,32 +209,38 @@ function startGenderDraw(){
             clearInterval(genderTimer);
             selectedGender = randomChoice(genders);
             result.textContent = t("msgWillLead").replace("{name}", getGenderName(selectedGender));
-            boat.style.left = selectedGender === "女性作家" ? "25%" : "75%";
+            if (selectedGender === "女性作家") boat.style.left = "16.6%";
+            else if (selectedGender === "男性作家") boat.style.left = "83.3%";
+            else boat.style.left = "50%";
             boat.classList.remove("swaying");
             actions.classList.remove("hidden");
             PetSystem.reactResult();
         }
     }, 160);
 }
-function goToGenre(){
-    showScreen("genreScreen");
-    document.getElementById("genreEraText").textContent = t("prefixEra") + getEraName(selectedEra);
-    document.getElementById("genreCountryText").textContent = t("prefixCountry") + getCountryName(selectedEra, selectedCountry);
-    document.getElementById("genreGenderText").textContent = t("prefixGender") + getGenderName(selectedGender);
-    buildBook();
-}
-
 /* ====================================================
    翻书抽文体
    ==================================================== */
 let genreTimeouts = [];
-function buildBook(){
+function buildBook(targetGenre){
     const container = document.getElementById("bookLeaves");
     if (!container) return;
     container.innerHTML = "";
     genreTimeouts.forEach(t => clearTimeout(t));
     genreTimeouts = [];
-    const shuffled = [...genres].sort(() => Math.random() - 0.5);
+    
+    // 获取当前时代允许的文体池
+    const allowedGenres = ERA_GENRES[selectedEra] || genres;
+    
+    let shuffled = [...allowedGenres];
+    if (targetGenre && shuffled.includes(targetGenre)) {
+        shuffled = shuffled.filter(g => g !== targetGenre);
+        shuffled.sort(() => Math.random() - 0.5);
+        shuffled.push(targetGenre);
+    } else {
+        shuffled.sort(() => Math.random() - 0.5);
+    }
+    
     shuffled.forEach((genre, i) => {
         const leaf = document.createElement("div");
         leaf.className = "leaf";
@@ -158,9 +266,9 @@ function manualSelectGenre(genre){
     if (sel) sel.value = "";
     genreTimeouts.forEach(t => clearTimeout(t));
     genreTimeouts = [];
-    buildBook();
+    buildBook(genre);
     const result = document.getElementById("genreResult");
-    result.textContent = t("prefixRead") + getGenreName(genre);
+        result.textContent = t("prefixRead") + getGenreName(genre);
     document.getElementById("genreStartButton").classList.add("hidden");
     document.getElementById("genreActions").classList.remove("hidden");
 }
