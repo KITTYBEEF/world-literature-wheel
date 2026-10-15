@@ -308,3 +308,25 @@
     transform: translateY(0) !important; /* 强制归位，杜绝错位 */
   }
 }
+
+/* =========== 首页卡片不建立层叠上下文，让搜索框能浮在看板娘之上 =========== */
+#homeScreen{
+  z-index: auto;
+}
+
+/* =========== 搜索框浮在看板娘上层 =========== */
+.home-search{
+  position: relative;
+  z-index: 10;
+}
+
+/* =========== 手机端：输入框聚焦时看板娘滑出屏幕 =========== */
+@media(max-width: 600px){
+  .kanban-main{
+    transition: transform .3s ease;
+  }
+  #homeScreen:focus-within ~ .kanban-main{
+    transform: translateY(120%);
+    pointer-events: none;
+  }
+}

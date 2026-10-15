@@ -35,8 +35,8 @@ function initGlobe(){
         .rotate([currentLambda, currentGlobePhi]);
     pathGen = d3.geoPath(projection);
 
-    d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json")
-        .then(world => {
+    d3.json("land-110m.json")
+            .then(world => {
             landFeature = topojson.feature(world, world.objects.land);
             renderGlobe();
         })

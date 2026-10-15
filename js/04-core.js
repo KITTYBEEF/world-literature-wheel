@@ -8,6 +8,7 @@ function restartJourney() {
     chosenContinent = "不限";
     pickedContinentThisDraw = "";
     currentJourneySaved = false;
+        searchPinnedBooks = [];
     eraRotation = 0;
     
     // 清理可能还在运行的定时器
@@ -137,7 +138,7 @@ function refreshDynamicContent(){
     document.getElementById("genderCountryText").textContent = t("prefixCountry") + getCountryName(selectedEra, selectedCountry);
     const gr = document.getElementById("genderResult");
     if (selectedGender){
-      gr.textContent = t("msgWillLead").replace("{name}", getGenderName(selectedGender));
+gr.textContent = getGenderLeadText(selectedGender);
     }
   }
   if (!document.getElementById("genreScreen").classList.contains("hidden")){
@@ -218,8 +219,9 @@ function showScreen(id){
 function randomChoice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 function startJourney(){
     currentJourneySaved = false;
+    searchPinnedBooks = [];   
     showScreen("eraScreen");
-    buildEraWheel();   // ← 保证进入时代页时转盘已经渲染
+    buildEraWheel();
 }
 function getEraCountries(era){ return eraCountries[era] || countries; }
 

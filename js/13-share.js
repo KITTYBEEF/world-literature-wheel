@@ -62,7 +62,7 @@ async function downloadShareCard(){
     const items = [
         ['时代', getEraName(selectedEra)],
         ['国家', getCountryName(selectedEra, selectedCountry)],
-        ['作家性别', getGenderName(selectedGender)],
+        ['作者性别', getGenderName(selectedGender)],
         ['文学文体', getGenreName(selectedGenre)]
     ];
     let y = 560;

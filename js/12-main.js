@@ -50,22 +50,43 @@ async function homeSearchBook(){
         if (input) input.placeholder = '测试：输入书名';
     }
 
-    // 模糊匹配书名
-    const found = BOOKS.find(b => b.title.includes(keyword));
-    if (!found){
+    // 精确匹配优先（书名或作者名完全等于关键词）
+    const exact = BOOKS.filter(b =>
+        b.title === keyword || b.author === keyword
+    );
+    // 模糊匹配（书名或作者名包含关键词）
+    const fuzzy = BOOKS.filter(b =>
+        (b.title && b.title.includes(keyword)) ||
+        (b.author && b.author.includes(keyword))
+    );
+
+    // 置顶组：所有匹配到的书（精确 + 模糊，去重）
+    const seen = new Set();
+    const pinned = [];
+    for (const b of [...exact, ...fuzzy]){
+        const key = (b.title || "") + "||" + (b.author || "");
+        if (seen.has(key)) continue;
+        seen.add(key);
+        pinned.push(b);
+    }
+
+    if (pinned.length === 0){
         alert('没找到包含「' + keyword + '」的书');
         return;
     }
 
-    // 把这本书的所有属性写进当前状态
-    selectedEra = found.era;
-    selectedCountry = found.country;
-    selectedGender = found.gender;
-    selectedGenre = found.genre;
+    // 用第一本（精确匹配优先）的属性作为筛选条件
+    const anchor = exact[0] || pinned[0];
+    selectedEra = anchor.era;
+    selectedCountry = anchor.country;
+    selectedGender = anchor.gender;
+    selectedGenre = anchor.genre;
     chosenContinent = "不限";
     pickedContinentThisDraw = "";
-    currentJourneySaved = true; // 测试用，不写入历史记录
+    currentJourneySaved = true;
 
-    // 跳到找书页
+    // 把这批书钉在最前
+    searchPinnedBooks = pinned;
+
     await goToFindBook();
 }

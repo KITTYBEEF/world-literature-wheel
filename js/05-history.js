@@ -130,6 +130,13 @@ function openFinalFromHistory(){
     document.getElementById("finalGender").textContent = t("finalGender") + getGenderName(selectedGender);
     document.getElementById("finalGenre").textContent = t("finalGenre") + getGenreName(selectedGenre);
     showScreen("finalScreen");
+        // 从历史记录进来 → 把底部按钮改成"返回主页"
+    const backBtn = document.getElementById("finalBackBtn");
+    if (backBtn) {
+        backBtn.textContent = t("btnBackHome");
+        backBtn.removeAttribute("data-i18n");
+        backBtn.onclick = function(){ goBack('home'); };
+    }
     // 显示"退出"，隐藏"重新开始"
     const r = document.getElementById("restartJourneyBtn");
     const e = document.getElementById("exitToHistoryBtn");

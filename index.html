@@ -4,25 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>世界文学大转盘 · World Literature Wheel — 让随机性带你遇见陌生的文学世界</title>
-<meta name="description" content="世界文学大转盘——从时代、大洲、国家、作家性别到文学文体，五重随机抽一签，看看概率会给你推荐哪本书。让随机性带你遇见陌生的文学世界。">
+<meta name="description" content="世界文学大转盘——从时代、大洲、国家、作者性别到文学文体，五重随机抽一签，看看概率会给你推荐哪本书。让随机性带你遇见陌生的文学世界。">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="世界文学大转盘 · World Literature Wheel">
-<meta property="og:description" content="世界文学大转盘——从时代、大洲、国家、作家性别到文学文体，五重随机抽一签，看看概率会给你推荐哪本书。让随机性带你遇见陌生的文学世界。">
+<meta property="og:description" content="世界文学大转盘——从时代、大洲、国家、作者性别到文学文体，五重随机抽一签，看看概率会给你推荐哪本书。让随机性带你遇见陌生的文学世界。">
 <meta property="og:image" content="https://literaturewheel.com/share-preview.png">
 <meta property="og:url" content="https://literaturewheel.com/">
 <meta property="og:site_name" content="World Literature Wheel">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="世界文学大转盘 · World Literature Wheel">
-<meta name="twitter:description" content="世界文学大转盘——从时代、大洲、国家、作家性别到文学文体，五重随机抽一签，看看概率会给你推荐哪本书。">
+<meta name="twitter:description" content="世界文学大转盘——从时代、大洲、国家、作者性别到文学文体，五重随机抽一签，看看概率会给你推荐哪本书。">
 <meta name="twitter:image" content="https://literaturewheel.com/share-preview.png">
 <meta name="theme-color" content="#fefcf7">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@300;400;500;600&display=swap">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600&display=swap');
-
-
 /* =========== 找书结果卡片 =========== */
 /* =========== 主界面立绘 =========== */
 </style>
@@ -187,22 +187,22 @@
 </section>
 
 <section id="genderScreen" class="screen hidden">
-    <h2 data-i18n="genderTitle">您将由哪一种性别的作家带入文学世界？</h2>
+    <h2 data-i18n="genderTitle">您将由哪一种性别的作者带入文学世界？</h2>
     <p id="genderEraText" class="country-title"></p>
     <p id="genderCountryText" class="country-title"></p>
     <div class="sea">
-        <div class="gender-side female-side" data-i18n="gFemale">女性作家</div>
-        <div class="gender-side unknown-side" data-i18n="gUnknown">性别未确认</div>
-        <div class="gender-side male-side" data-i18n="gMale">男性作家</div>
+        <div class="gender-side female-side" data-i18n="gFemale">女性作者</div>
+        <div class="gender-side unknown-side" data-i18n="gUnknown">作者未详</div>
+        <div class="gender-side male-side" data-i18n="gMale">男性作者</div>
         <div id="boat" class="boat">⛵</div>
     </div>
     <button id="genderStartButton" onclick="startGenderDraw()" data-i18n="btnDraw">抽取</button>
     <div style="margin:6px 0 14px;">
         <select id="genderManualSelect" onchange="manualSelectGender(this.value)" style="font-family:inherit;font-size:12px;letter-spacing:.2em;padding:6px 14px;color:#8b6a4e;background:transparent;border:1px solid rgba(184,147,90,.25);border-radius:3px;cursor:pointer;outline:none;">
 <option value="" data-i18n="optOrCustom">— 或者自选 —</option>
-            <option value="女性作家">女性作家</option>
-            <option value="性别未确认">性别未确认</option>
-            <option value="男性作家">男性作家</option>
+            <option value="女性作者">女性作者</option>
+            <option value="作者未详">作者未详</option>
+            <option value="男性作者">男性作者</option>
         </select>
     </div>
     <div id="genderResult" class="result" data-i18n="notDrawn">尚未抽取</div>
@@ -272,8 +272,7 @@
                     <button id="restartJourneyBtn" onclick="restartJourney()" data-i18n="btnRestart">重新开始</button>
                     <button id="exitToHistoryBtn" onclick="exitToHistory()" class="hidden" data-i18n="btnExitHistory">退出</button>
                 </div>
-                <button class="back-step-btn" onclick="goBack('genre')" data-i18n="btnBack">返回上一步</button>
-            </div>
+<button class="back-step-btn" id="finalBackBtn" onclick="goBack('genre')" data-i18n="btnBack">返回上一步</button>
         </section>
 <section id="findBookScreen" class="screen hidden">
     <h2 data-i18n="findBookTitle">为你找到的书</h2>
@@ -283,6 +282,7 @@
     </div>
     <button class="back-step-btn" onclick="goBack('final')" data-i18n="btnBack">返回上一步</button>
     <button class="back-step-btn" onclick="restartJourney()" data-i18n="btnRestart">重新开始</button>
+        <button class="see-more-btn" id="suggestBookBtn" onclick="openBookSuggestion()" style="margin:32px auto 8px !important;">📝 推荐一本书</button>
     <p class="library-note">
         <span data-i18n="libraryNote">书库持续校对中，如有错误欢迎</span>
         <a href="https://github.com/KITTYBEEF/world-literature-wheel/issues/new" target="_blank" rel="noopener" data-i18n="libraryLinkGithub">在 GitHub 留言</a>
@@ -381,8 +381,8 @@
 <div class="pet hidden" id="pet" data-state="idle">
   <img id="petImg" src="pet-idle.webp" alt="">
 </div>
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<script src="js/d3.min.js"></script>
+<script src="js/topojson-client.min.js"></script>
 <script src="js/01-data.js"></script>
 <script src="js/02-i18n.js"></script>
 <script src="js/03-state.js"></script>

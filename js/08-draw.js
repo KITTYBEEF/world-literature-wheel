@@ -93,11 +93,11 @@ function manualSelectGender(gender){
     if (sel) sel.value = "";
     clearInterval(genderTimer);
     const result = document.getElementById("genderResult");
-    result.textContent = t("msgWillLead").replace("{name}", getGenderName(gender));
+result.textContent = getGenderLeadText(gender);
     const boat = document.getElementById("boat");
     boat.classList.remove("swaying");
-    if (gender === "女性作家") boat.style.left = "16.6%";
-    else if (gender === "男性作家") boat.style.left = "83.3%";
+    if (gender === "女性作者") boat.style.left = "16.6%";
+    else if (gender === "男性作者") boat.style.left = "83.3%";
     else boat.style.left = "50%";
         document.getElementById("genderStartButton").classList.add("hidden");
     document.getElementById("genderActions").classList.remove("hidden");
@@ -178,11 +178,11 @@ function manualSelectGender(gender){
     if (sel) sel.value = "";
     clearInterval(genderTimer);
     const result = document.getElementById("genderResult");
-    result.textContent = t("msgWillLead").replace("{name}", getGenderName(gender));
+result.textContent = getGenderLeadText(gender);
     const boat = document.getElementById("boat");
     boat.classList.remove("swaying");
-    if (gender === "女性作家") boat.style.left = "16.6%";
-    else if (gender === "男性作家") boat.style.left = "83.3%";
+    if (gender === "女性作者") boat.style.left = "16.6%";
+    else if (gender === "男性作者") boat.style.left = "83.3%";
     else boat.style.left = "50%";
     document.getElementById("genderStartButton").classList.add("hidden");
     document.getElementById("genderActions").classList.remove("hidden");
@@ -204,13 +204,15 @@ function startGenderDraw(){
     genderTimer = setInterval(() => {
         const temp = randomChoice(genders);
         result.textContent = getGenderName(temp);
-        boat.style.left = temp === "女性作家" ? "25%" : "75%";
-        if (++count >= total){
+        if (temp === "女性作者") boat.style.left = "25%";
+        else if (temp === "男性作者") boat.style.left = "75%";
+        else boat.style.left = "50%";
+                if (++count >= total){
             clearInterval(genderTimer);
             selectedGender = randomChoice(genders);
-            result.textContent = t("msgWillLead").replace("{name}", getGenderName(selectedGender));
-            if (selectedGender === "女性作家") boat.style.left = "16.6%";
-            else if (selectedGender === "男性作家") boat.style.left = "83.3%";
+result.textContent = getGenderLeadText(selectedGender);
+            if (selectedGender === "女性作者") boat.style.left = "16.6%";
+            else if (selectedGender === "男性作者") boat.style.left = "83.3%";
             else boat.style.left = "50%";
             boat.classList.remove("swaying");
             actions.classList.remove("hidden");
@@ -327,6 +329,13 @@ function showFinalResult(){
     document.getElementById("finalGenre").textContent = t("finalGenre") + getGenreName(selectedGenre);
     saveJourney();
     showScreen("finalScreen");
+        // 正常流程 → 恢复底部按钮为"返回上一步"
+    const backBtn = document.getElementById("finalBackBtn");
+    if (backBtn) {
+        backBtn.textContent = t("btnBack");
+        backBtn.setAttribute("data-i18n", "btnBack");
+        backBtn.onclick = function(){ goBack('genre'); };
+    }
     // 正常流程：显示"重新开始"，隐藏"退出"
     const r = document.getElementById("restartJourneyBtn");
     const e = document.getElementById("exitToHistoryBtn");
