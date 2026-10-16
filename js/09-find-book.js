@@ -410,9 +410,8 @@ function ensureBookSuggestionModal() {
           书名 *
           <input name="title" required maxlength="200"
             style="display:block;width:100%;box-sizing:border-box;padding:10px;">
+          <div id="bookSuggestionSearchResult" style="margin-top:8px;font-size:13px;line-height:1.7;"></div>
         </label>
-
-        <label>
           作者 *
           <input name="author" required maxlength="200"
             style="display:block;width:100%;box-sizing:border-box;padding:10px;">
@@ -609,4 +608,39 @@ function openBookSuggestion() {
 
   const titleInput = modal.querySelector('input[name="title"]');
   if (titleInput) titleInput.focus();
+    // 书名实时搜索：在书库里查重
+  const searchResultEl = document.getElementById("bookSuggestionSearchResult");
+  if (titleInput && searchResultEl){
+    function runSearch(k){
+      const exact = BOOKS.filter(b => b.title === k);
+      const fuzzy = BOOKS.filter(b => b.title && b.title.includes(k) && b.title !== k);
+      const matched = [...exact, ...fuzzy].slice(0, 6);
+      if (matched.length === 0){
+        searchResultEl.style.color = "#267347";
+        searchResultEl.textContent = "✅ 书库里没有找到同名或相似的书，可以放心投稿";
+        return;
+      }
+      searchResultEl.style.color = "#a35a00";
+      let html = "⚠️ 书库里已有相似的书，投稿前请先核对：<br>";
+      matched.forEach(b => {
+        html += "· 《" + b.title + "》" + (b.author ? " — " + b.author : "") + "（" + b.era + " · " + b.country + "）<br>";
+      });
+      searchResultEl.innerHTML = html;
+    }
+
+    titleInput.oninput = function(){
+      const kw = titleInput.value.trim();
+      if (!kw){
+        searchResultEl.innerHTML = "";
+        return;
+      }
+      if (!booksLoaded){
+        searchResultEl.style.color = "#8a6a3f";
+        searchResultEl.textContent = "书库加载中……";
+        loadBooks().then(function(){ runSearch(kw); });
+      } else {
+        runSearch(kw);
+      }
+    };
+  }
 }

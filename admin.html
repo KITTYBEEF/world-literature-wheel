@@ -255,8 +255,24 @@ footer {
 <section id="dashboard" class="hidden">
 
   <div class="card">
-    <h2>投稿管理</h2>
+    <h2>🔍 书库查重</h2>
+    <p class="muted">输入书名或作者名，在书库中查找是否已存在。</p>
 
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <input
+        id="adminSearchInput"
+        type="text"
+        placeholder="输入书名或作者名，回车即可搜索"
+        style="flex:1;min-width:220px;margin:0;"
+      >
+      <button id="adminSearchButton">搜索</button>
+    </div>
+
+    <div id="adminSearchResult" style="margin-top:16px;"></div>
+  </div>
+
+  <div class="card">
+    <h2>投稿管理</h2>
     <div class="toolbar">
       <button class="tab active" data-status="pending">
         ⏳ 待审核
@@ -327,6 +343,79 @@ function showMessage(element, message, type = "") {
 function hideMessage(element) {
   element.textContent = "";
   element.className = "status hidden";
+}
+
+// ===== 书库加载与查重（审核用） =====
+let BOOKS = [];
+let booksLoaded = false;
+
+function loadBooks(){
+  return new Promise((resolve) => {
+    if (booksLoaded){ resolve(); return; }
+
+    const files = [
+      "data/books/prehistory.js",
+      "data/books/early-civ.js",
+      "data/books/classical.js",
+      "data/books/post-classical.js",
+      "data/books/early-modern.js",
+      "data/books/industry-empire.js",
+      "data/books/global-conflict.js",
+      "data/books/contemporary.js"
+    ];
+
+    let loaded = 0;
+    function tryFinish(){
+      loaded++;
+      if (loaded < files.length) return;
+
+      BOOKS = [
+        ...(window.BOOKS_PREHISTORY      || []),
+        ...(window.BOOKS_EARLY_CIV       || []),
+        ...(window.BOOKS_CLASSICAL       || []),
+        ...(window.BOOKS_POST_CLASSICAL  || []),
+        ...(window.BOOKS_EARLY_MODERN    || []),
+        ...(window.BOOKS_INDUSTRY_EMPIRE || []),
+        ...(window.BOOKS_GLOBAL_CONFLICT || []),
+        ...(window.BOOKS_CONTEMPORARY    || [])
+      ];
+      booksLoaded = true;
+      resolve();
+    }
+
+    files.forEach(src => {
+      const s = document.createElement("script");
+      s.src = src;
+      s.onload = tryFinish;
+      s.onerror = tryFinish;
+      document.head.appendChild(s);
+    });
+  });
+}
+
+function searchBooks(title, author){
+  const titleKw = (title || "").trim();
+  const authorKw = (author || "").trim();
+  if (!titleKw && !authorKw) return [];
+
+  const exact = BOOKS.filter(b =>
+    (titleKw && b.title === titleKw) ||
+    (authorKw && b.author === authorKw)
+  );
+  const fuzzy = BOOKS.filter(b =>
+    (titleKw && b.title && b.title.includes(titleKw) && b.title !== titleKw) ||
+    (authorKw && b.author && b.author.includes(authorKw) && b.author !== authorKw)
+  );
+
+  const seen = new Set();
+  const result = [];
+  for (const b of [...exact, ...fuzzy]){
+    const key = (b.title || "") + "||" + (b.author || "");
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push(b);
+  }
+  return result;
 }
 
 function setLoggedIn(value) {
@@ -537,6 +626,17 @@ async function loadSubmissions() {
             </div>
           </div>
 
+          <div class="actions" style="margin-bottom:10px;">
+            <button
+              class="small secondary"
+              data-action="check"
+              data-title="${escapeHTML(item.title || "")}"
+              data-author="${escapeHTML(item.author || "")}"
+            >🔍 在书库中查重</button>
+          </div>
+
+          <div class="checkResult" style="margin-bottom:10px;"></div>
+
           ${
             currentStatus === "pending"
               ? `
@@ -605,6 +705,49 @@ $("submissionList").addEventListener("click", async (event) => {
   if (!button || !adminSecret) return;
 
   const action = button.dataset.action;
+
+  // 查重：不需要管理员权限，只在本地书库搜索
+  if (action === "check"){
+    const title = button.dataset.title || "";
+    const author = button.dataset.author || "";
+    const resultEl = button.closest("article").querySelector(".checkResult");
+    if (!resultEl) return;
+
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = "🔍 加载书库中……";
+    resultEl.innerHTML = '<span style="color:#77756d;">第一次使用需加载书库（约几秒）……</span>';
+
+    try {
+      await loadBooks();
+      button.textContent = "🔍 查重中……";
+      const hits = searchBooks(title, author);
+
+      if (hits.length === 0){
+        resultEl.innerHTML = '<span style="color:#285b37;">✅ 书库里没有找到同名或相似的书</span>';
+      } else {
+        let html = '<div style="color:#a35a00;margin-bottom:6px;">⚠️ 书库里已有相似的记录（' + hits.length + ' 条）：</div>';
+        hits.slice(0, 8).forEach(b => {
+          html += '<div style="padding:6px 10px;background:#f7f5ef;border-radius:6px;margin-bottom:4px;">';
+          html += '<strong>《' + escapeHTML(b.title) + '》</strong>';
+          if (b.author) html += ' — ' + escapeHTML(b.author);
+          html += ' <span style="color:#77756d;">（' + escapeHTML(b.era) + ' · ' + escapeHTML(b.country) + '）</span>';
+          html += '</div>';
+        });
+        if (hits.length > 8){
+          html += '<div style="color:#77756d;">……还有 ' + (hits.length - 8) + ' 条</div>';
+        }
+        resultEl.innerHTML = html;
+      }
+    } catch (err){
+      resultEl.innerHTML = '<span style="color:#8b2929;">书库加载失败：' + escapeHTML(err.message || err) + '</span>';
+    } finally {
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+    return;
+  }
+
   const id = Number(button.dataset.id);
 
   if (
@@ -667,6 +810,71 @@ document.querySelectorAll(".tab").forEach((button) => {
 
     await loadSubmissions();
   });
+});
+// ===== 管理员独立查重窗口 =====
+async function runAdminSearch(){
+  const input = $("adminSearchInput");
+  const resultEl = $("adminSearchResult");
+  const button = $("adminSearchButton");
+  if (!input || !resultEl || !button) return;
+
+  const kw = input.value.trim();
+  if (!kw){
+    resultEl.innerHTML = '<span style="color:#77756d;">请输入关键词。</span>';
+    return;
+  }
+
+  const originalText = button.textContent;
+  button.disabled = true;
+  button.textContent = "搜索中……";
+
+  try {
+    if (!booksLoaded){
+      resultEl.innerHTML = '<span style="color:#77756d;">首次搜索需加载书库（约几秒）……</span>';
+      await loadBooks();
+    }
+
+    const exact = BOOKS.filter(b => b.title === kw || b.author === kw);
+    const fuzzy = BOOKS.filter(b =>
+      ((b.title && b.title.includes(kw)) || (b.author && b.author.includes(kw))) &&
+      !(b.title === kw || b.author === kw)
+    );
+    const matched = [...exact, ...fuzzy];
+
+    if (matched.length === 0){
+      resultEl.innerHTML = '<span style="color:#285b37;">✅ 书库里没有找到匹配的书</span>';
+      return;
+    }
+
+    let html = '<div style="color:#a35a00;margin-bottom:8px;">找到 <strong>' + matched.length + '</strong> 条匹配：</div>';
+    matched.slice(0, 30).forEach(b => {
+      html += '<div style="padding:10px 14px;background:#f7f5ef;border-radius:8px;margin-bottom:6px;">';
+      html += '<strong>《' + escapeHTML(b.title) + '》</strong>';
+      if (b.author) html += ' — ' + escapeHTML(b.author);
+      html += ' <span style="color:#77756d;">（' +
+        escapeHTML(b.era || "") + ' · ' +
+        escapeHTML(b.country || "") + ' · ' +
+        escapeHTML(b.gender || "") + ' · ' +
+        escapeHTML(b.genre || "") +
+      '）</span>';
+      html += '</div>';
+    });
+    if (matched.length > 30){
+      html += '<div style="color:#77756d;">……还有 ' + (matched.length - 30) + ' 条未显示</div>';
+    }
+    resultEl.innerHTML = html;
+
+  } catch (err){
+    resultEl.innerHTML = '<span style="color:#8b2929;">搜索失败：' + escapeHTML(err.message || err) + '</span>';
+  } finally {
+    button.disabled = false;
+    button.textContent = originalText;
+  }
+}
+
+$("adminSearchButton").addEventListener("click", runAdminSearch);
+$("adminSearchInput").addEventListener("keypress", function(e){
+  if (e.key === "Enter") runAdminSearch();
 });
 
 $("refreshButton").addEventListener("click", loadSubmissions);
